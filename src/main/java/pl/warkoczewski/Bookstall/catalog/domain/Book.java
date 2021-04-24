@@ -1,4 +1,4 @@
-package pl.warkoczewski.Bookstall;
+package pl.warkoczewski.Bookstall.catalog.domain;
 
 public class Book {
 
