@@ -1,11 +1,10 @@
 package pl.warkoczewski.Bookstall.catalog.domain;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import pl.warkoczewski.Bookstall.catalog.domain.Book;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -13,7 +12,7 @@ public class CatalogService {
 
     private final CatalogRepository catalogRepository;
 
-    public CatalogService(CatalogRepository catalogRepository) {
+    public CatalogService(@Qualifier("bestsellerCatalogRepository") CatalogRepository catalogRepository) {
         this.catalogRepository = catalogRepository;
     }
 
