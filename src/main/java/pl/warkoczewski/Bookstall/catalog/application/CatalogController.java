@@ -15,6 +15,8 @@ public class CatalogController {
         this.catalogService = catalogService;
     }
 
+    public List<Book> findByAuthor(String author){ return catalogService.findByAuthor(author);}
+
     public List<Book> findByTitle(String title){
         return catalogService.findByTitle(title);
     }

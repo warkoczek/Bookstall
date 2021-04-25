@@ -16,6 +16,13 @@ public class CatalogService {
         this.catalogRepository = catalogRepository;
     }
 
+    public List<Book> findByAuthor(String author){
+        return catalogRepository.findAll()
+                .stream()
+                .filter(book -> book.getAuthor().startsWith(author))
+                .collect(Collectors.toList());
+    }
+
     public List<Book> findByTitle(String title){
         return catalogRepository.findAll()
                 .stream()
