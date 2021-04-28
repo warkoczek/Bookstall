@@ -27,10 +27,9 @@ public class ApplicationStartup implements CommandLineRunner {
     @Override
     public void run(String... args) {
         dataInit();
-        List<Book> books = catalog.findByTitle(title);
-        books.stream().limit(limit).forEach(System.out::println);
-        List<Book> byAuthor = catalog.findByAuthor(author);
-        byAuthor.forEach(System.out::println);
+        findByTitle();
+        findAndUpdate();
+        findByTitle();
     }
 
     private void dataInit() {
@@ -39,5 +38,23 @@ public class ApplicationStartup implements CommandLineRunner {
         catalog.addBook( new CatalogUseCase.CreateBookCommand( "Ogniem i mieczem", "Henryk Sienkiewicz", 1884));
         catalog.addBook( new CatalogUseCase.CreateBookCommand( "Chłopi", "Władysław Reymont", 1904));
         catalog.addBook( new CatalogUseCase.CreateBookCommand( "Pan Wołodyjowski", "Henryk Sienkiewicz", 1899));
+    }
+
+    private void findByTitle() {
+        List<Book> byTitle = catalog.findByTitle(title);
+        byTitle.forEach(System.out::println);
+    }
+
+    private void findAndUpdate() {
+        catalog.findOneByTitleAndAuthor("Pan Tadeusz", "Adam Mickiewicz")
+                .ifPresent(book -> {
+                    CatalogUseCase.UpdateBookCommand command = new CatalogUseCase.UpdateBookCommand(
+                            book.getId(),
+                            "Pan Tadeusz, czyli ostatni zajazd na Litwie",
+                            book.getAuthor(),
+                            book.getYear()
+                    );
+                    catalog.updateBook(command);
+                });
     }
 }

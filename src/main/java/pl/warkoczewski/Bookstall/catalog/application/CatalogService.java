@@ -7,6 +7,8 @@ import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 import pl.warkoczewski.Bookstall.catalog.domain.CatalogRepository;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,18 +43,30 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
-    public void updateBook() {
-
+    public UpdateBookResponse updateBook(UpdateBookCommand bookCommand) {
+        return catalogRepository.findById(bookCommand.getId())
+                .map(book -> {
+                    book.setTitle(bookCommand.getTitle());
+                    book.setAuthor(bookCommand.getAuthor());
+                    book.setYear(bookCommand.getYear());
+                    catalogRepository.save(book);
+                    return UpdateBookResponse.SUCCESS;
+                })
+                .orElseGet(() -> new UpdateBookResponse(false, Arrays.asList("Book with id: " + bookCommand.getId() + " was not found")));
     }
 
     @Override
     public List<Book> findAll() {
-        return null;
+        return catalogRepository.findAll();
     }
 
     @Override
     public Optional<Book> findOneByTitleAndAuthor(String title, String author) {
-        return Optional.empty();
+        return catalogRepository.findAll()
+                .stream()
+                .filter(book -> book.getTitle().startsWith(title))
+                .filter(book -> book.getAuthor().startsWith(author))
+                .findFirst();
     }
 
     @Override

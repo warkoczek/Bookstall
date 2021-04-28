@@ -7,6 +7,7 @@ import pl.warkoczewski.Bookstall.catalog.domain.CatalogRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -26,10 +27,19 @@ public class MemoryCatalogRepository implements CatalogRepository {
     }
 
     @Override
+    public Optional<Book> findById(Long id) {
+        return Optional.ofNullable(storage.get(id));
+    }
+
+    @Override
     public void save(Book book){
-        Long nextId = getNext();
-        book.setId(nextId);
-        storage.put(nextId, book);
+        if(book.getId() != null){
+            storage.put(book.getId(), book);
+        }else {
+            Long nextId = getNext();
+            book.setId(nextId);
+            storage.put(nextId, book);
+        }
     }
 
     private long getNext() {
