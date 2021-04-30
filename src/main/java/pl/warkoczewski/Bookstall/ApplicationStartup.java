@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase;
+import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.UpdateBookResponse;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 
 import java.util.List;
@@ -48,13 +49,12 @@ public class ApplicationStartup implements CommandLineRunner {
     private void findAndUpdate() {
         catalog.findOneByTitleAndAuthor("Pan Tadeusz", "Adam Mickiewicz")
                 .ifPresent(book -> {
-                    CatalogUseCase.UpdateBookCommand command = new CatalogUseCase.UpdateBookCommand(
-                            book.getId(),
-                            "Pan Tadeusz, czyli ostatni zajazd na Litwie",
-                            book.getAuthor(),
-                            book.getYear()
-                    );
-                    catalog.updateBook(command);
+                    CatalogUseCase.UpdateBookCommand command = CatalogUseCase.UpdateBookCommand.builder()
+                            .id(book.getId())
+                            .title("Pan Tadeusz, czyli ostatni zajazd na Litwie")
+                            .build();
+                    UpdateBookResponse updateBookResponse = catalog.updateBook(command);
+                    System.out.println("Updating book result: " + updateBookResponse.isSuccess());
                 });
     }
 }

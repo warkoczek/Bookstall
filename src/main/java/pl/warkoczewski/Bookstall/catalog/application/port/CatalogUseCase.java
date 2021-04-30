@@ -1,6 +1,6 @@
 package pl.warkoczewski.Bookstall.catalog.application.port;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Value;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 
@@ -32,12 +32,25 @@ public interface CatalogUseCase {
     }
 
     @Value
+    @Builder
     class UpdateBookCommand{
-        Long id;
-        String title;
-        String author;
-        int year;
+         Long id;
+         String title;
+         String author;
+         Integer year;
 
+        public Book updateFields(Book book) {
+            if(title != null){
+                book.setTitle(title);
+            }
+            if(author != null){
+                book.setAuthor(author);
+            }
+            if((year != null)){
+                book.setYear(year);
+            }
+            return book;
+        }
     }
 
     @Value
