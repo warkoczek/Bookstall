@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Value;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +29,8 @@ public interface CatalogUseCase {
     class CreateBookCommand{
         String title;
         String author;
-        int year;
+        Integer year;
+        BigDecimal price;
     }
 
     @Value
@@ -38,6 +40,7 @@ public interface CatalogUseCase {
          String title;
          String author;
          Integer year;
+         BigDecimal price;
 
         public Book updateFields(Book book) {
             if(title != null){
@@ -48,6 +51,9 @@ public interface CatalogUseCase {
             }
             if((year != null)){
                 book.setYear(year);
+            }
+            if((price != null)){
+                book.setPrice(price);
             }
             return book;
         }
