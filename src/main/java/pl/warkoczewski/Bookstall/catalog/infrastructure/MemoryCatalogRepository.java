@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MemoryCatalogRepository implements CatalogRepository {
 
     private final Map<Long, Book> storage = new ConcurrentHashMap<>();
-    private final AtomicLong NEXT_ID_VALUE = new AtomicLong(0);
+    private final AtomicLong NEXT_ID_VALUE = new AtomicLong(1);
 
     public MemoryCatalogRepository() {
 

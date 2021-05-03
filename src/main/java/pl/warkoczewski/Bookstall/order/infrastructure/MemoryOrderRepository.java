@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MemoryOrderRepository implements OrderRepository {
 
     private final Map<Long, Order> storage = new ConcurrentHashMap<>();
-    private final AtomicLong NEXT_ID = new AtomicLong(0);
+    private final AtomicLong NEXT_ID = new AtomicLong(1);
 
     @Override
     public Order save(Order order) {

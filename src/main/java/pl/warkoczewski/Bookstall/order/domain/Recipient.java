@@ -1,8 +1,10 @@
 package pl.warkoczewski.Bookstall.order.domain;
 
-import lombok.Value;
+import lombok.Builder;
+import lombok.Data;
 
-@Value
+@Data
+@Builder
 public class Recipient {
 
     String name;

@@ -19,6 +19,8 @@ public interface CatalogUseCase {
 
     List<Book> findByTitle(String title);
 
+    Optional<Book> findOneByTitle(String title);
+
     void addBook(CreateBookCommand bookCommand);
 
     void removeById(Long id);
