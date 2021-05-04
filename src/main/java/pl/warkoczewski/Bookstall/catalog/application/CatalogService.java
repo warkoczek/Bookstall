@@ -22,10 +22,15 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
+    public Optional<Book> findById(Long id){
+        return catalogRepository.findById(id);
+    }
+
+    @Override
     public List<Book> findByTitle(String title){
         return catalogRepository.findAll()
                 .stream()
-                .filter(book -> book.getTitle().startsWith(title))
+                .filter(book -> book.getTitle().toLowerCase().startsWith(title.toLowerCase()))
                 .collect(Collectors.toList());
 
     }
