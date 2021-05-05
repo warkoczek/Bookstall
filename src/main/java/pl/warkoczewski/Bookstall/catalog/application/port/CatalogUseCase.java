@@ -27,7 +27,7 @@ public interface CatalogUseCase {
 
     Optional<Book> findOneByAuthor(String author);
 
-    void addBook(CreateBookCommand bookCommand);
+    Book addBook(CreateBookCommand command);
 
     void removeById(Long id);
 
@@ -39,6 +39,10 @@ public interface CatalogUseCase {
         String author;
         Integer year;
         BigDecimal price;
+
+        public Book toBook() {
+            return new Book(title, author, year, price);
+        }
     }
 
     @Value
