@@ -30,14 +30,21 @@ class CatalogService implements CatalogUseCase {
     public List<Book> findByTitle(String title){
         return catalogRepository.findAll()
                 .stream()
-                .filter(book -> book.getTitle().toLowerCase().startsWith(title.toLowerCase()))
+                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
                 .collect(Collectors.toList());
 
     }
 
     @Override
     public Optional<Book> findOneByTitle(String title) {
-        return catalogRepository.findAll().stream().filter(book -> book.getTitle().startsWith(title)).findFirst();
+        return catalogRepository.findAll().stream().filter(book -> book.getTitle().contains(title)).findFirst();
+    }
+
+    @Override
+    public Optional<Book> findOneByAuthor(String author) {
+        return catalogRepository.findAll()
+                .stream().filter(book -> book.getTitle().toLowerCase().contains(author.toLowerCase()))
+                .findFirst();
     }
 
     @Override
@@ -71,16 +78,24 @@ class CatalogService implements CatalogUseCase {
     public Optional<Book> findOneByTitleAndAuthor(String title, String author) {
         return catalogRepository.findAll()
                 .stream()
-                .filter(book -> book.getTitle().startsWith(title))
-                .filter(book -> book.getAuthor().startsWith(author))
+                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
                 .findFirst();
+    }
+
+    @Override
+    public List<Book> findByTitleAndAuthor(String title, String author) {
+        return catalogRepository.findAll().stream()
+                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Book> findByAuthor(String author){
         return catalogRepository.findAll()
                 .stream()
-                .filter(book -> book.getAuthor().startsWith(author))
+                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
                 .collect(Collectors.toList());
     }
 }
