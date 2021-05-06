@@ -8,6 +8,7 @@ import pl.warkoczewski.Bookstall.catalog.domain.Book;
 import pl.warkoczewski.Bookstall.catalog.domain.CatalogRepository;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,18 +23,35 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
+    public Optional<Book> findById(Long id){
+        return catalogRepository.findById(id);
+    }
+
+    @Override
     public List<Book> findByTitle(String title){
         return catalogRepository.findAll()
                 .stream()
-                .filter(book -> book.getTitle().startsWith(title))
+                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
                 .collect(Collectors.toList());
 
     }
 
     @Override
-    public void addBook(CreateBookCommand bookCommand) {
-        Book book = new Book(bookCommand.getTitle(), bookCommand.getAuthor(), bookCommand.getYear());
-        catalogRepository.save(book);
+    public Optional<Book> findOneByTitle(String title) {
+        return catalogRepository.findAll().stream().filter(book -> book.getTitle().contains(title)).findFirst();
+    }
+
+    @Override
+    public Optional<Book> findOneByAuthor(String author) {
+        return catalogRepository.findAll()
+                .stream().filter(book -> book.getTitle().toLowerCase().contains(author.toLowerCase()))
+                .findFirst();
+    }
+
+    @Override
+    public Book addBook(CreateBookCommand command) {
+        Book book = command.toBook();
+        return catalogRepository.save(book);
     }
 
     @Override
@@ -49,7 +67,7 @@ class CatalogService implements CatalogUseCase {
                     catalogRepository.save(updatedBook);
                     return UpdateBookResponse.SUCCESS;
                 })
-                .orElseGet(() -> new UpdateBookResponse(false, Arrays.asList("Book with id: " + bookCommand.getId() + " was not found")));
+                .orElseGet(() -> new UpdateBookResponse(false, Collections.singletonList("Book with id: " + bookCommand.getId() + " was not found")));
     }
 
     @Override
@@ -61,16 +79,24 @@ class CatalogService implements CatalogUseCase {
     public Optional<Book> findOneByTitleAndAuthor(String title, String author) {
         return catalogRepository.findAll()
                 .stream()
-                .filter(book -> book.getTitle().startsWith(title))
-                .filter(book -> book.getAuthor().startsWith(author))
+                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
                 .findFirst();
+    }
+
+    @Override
+    public List<Book> findByTitleAndAuthor(String title, String author) {
+        return catalogRepository.findAll().stream()
+                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Book> findByAuthor(String author){
         return catalogRepository.findAll()
                 .stream()
-                .filter(book -> book.getAuthor().startsWith(author))
+                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
                 .collect(Collectors.toList());
     }
 }

@@ -1,9 +1,11 @@
 package pl.warkoczewski.Bookstall.catalog.application.port;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -12,13 +14,21 @@ public interface CatalogUseCase {
 
     List<Book> findAll();
 
+    Optional<Book> findById(Long id);
+
     Optional<Book> findOneByTitleAndAuthor(String title, String author);
+
+    List<Book> findByTitleAndAuthor(String title, String author);
 
     List<Book> findByAuthor(String author);
 
     List<Book> findByTitle(String title);
 
-    void addBook(CreateBookCommand bookCommand);
+    Optional<Book> findOneByTitle(String title);
+
+    Optional<Book> findOneByAuthor(String author);
+
+    Book addBook(CreateBookCommand command);
 
     void removeById(Long id);
 
@@ -28,16 +38,23 @@ public interface CatalogUseCase {
     class CreateBookCommand{
         String title;
         String author;
-        int year;
+        Integer year;
+        BigDecimal price;
+
+        public Book toBook() {
+            return new Book(title, author, year, price);
+        }
     }
 
     @Value
     @Builder
+    @AllArgsConstructor
     class UpdateBookCommand{
          Long id;
          String title;
          String author;
          Integer year;
+         BigDecimal price;
 
         public Book updateFields(Book book) {
             if(title != null){
@@ -48,6 +65,9 @@ public interface CatalogUseCase {
             }
             if((year != null)){
                 book.setYear(year);
+            }
+            if((price != null)){
+                book.setPrice(price);
             }
             return book;
         }
