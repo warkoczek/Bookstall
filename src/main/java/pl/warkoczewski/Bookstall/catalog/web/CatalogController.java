@@ -53,6 +53,11 @@ public class CatalogController {
         return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + book.getId().toString()).build().toUri();
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBook(@PathVariable Long id){
+        catalog.removeById(id);
+    }
     @Data
     private static class RestCreateBookCommand{
         private String title;
