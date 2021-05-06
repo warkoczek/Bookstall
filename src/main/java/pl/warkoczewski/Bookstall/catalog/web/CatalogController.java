@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase;
@@ -16,8 +17,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequestMapping("/catalog")
 @RestController
@@ -62,6 +63,7 @@ public class CatalogController {
     public void deleteBook(@PathVariable Long id){
         catalog.removeById(id);
     }
+
     @Data
     private static class RestCreateBookCommand{
         @NotBlank
