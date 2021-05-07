@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 import pl.warkoczewski.Bookstall.catalog.domain.CatalogRepository;
+import pl.warkoczewski.Bookstall.upload.application.UploadService;
+import pl.warkoczewski.Bookstall.upload.application.port.UploadUseCase;
+import pl.warkoczewski.Bookstall.upload.application.port.UploadUseCase.SaveUploadCommand;
+import pl.warkoczewski.Bookstall.upload.domain.Upload;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,9 +21,11 @@ import java.util.stream.Collectors;
 class CatalogService implements CatalogUseCase {
 
     private final CatalogRepository catalogRepository;
+    private final UploadUseCase upload;
 
-    public CatalogService(@Qualifier("memoryCatalogRepository") CatalogRepository catalogRepository) {
+    public CatalogService(@Qualifier("memoryCatalogRepository") CatalogRepository catalogRepository, UploadUseCase upload) {
         this.catalogRepository = catalogRepository;
+        this.upload = upload;
     }
 
     @Override
@@ -68,6 +74,21 @@ class CatalogService implements CatalogUseCase {
                     return UpdateBookResponse.SUCCESS;
                 })
                 .orElseGet(() -> new UpdateBookResponse(false, Collections.singletonList("Book with id: " + bookCommand.getId() + " was not found")));
+    }
+
+    @Override
+    public void updateBookCover(UpdateBookCoverCommand command){
+        int bytes = command.getFile().length;
+        System.out.println("Pan Tadeusz " + command.getFilename() + " has bytes: " + bytes);
+        catalogRepository.findById(command.getId()).ifPresent(
+                book -> {
+                    SaveUploadCommand saveUploadCommand = new SaveUploadCommand(command.getFilename()
+                            , command.getFile(), command.getContentType());
+                    Upload savedUpload = upload.save(saveUploadCommand);
+                    book.setCoverId(savedUpload.getId());
+                    catalogRepository.save(book);
+                }
+        );
     }
 
     @Override
