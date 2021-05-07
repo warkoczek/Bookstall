@@ -82,7 +82,7 @@ public class CatalogController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void addBookCover(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
         UpdateBookCoverCommand command = new UpdateBookCoverCommand(id, file.getBytes(), file.getContentType(), file.getOriginalFilename());
-        catalog.updateBookCover(commandp);
+        catalog.updateBookCover(command);
     }
 
     @Data

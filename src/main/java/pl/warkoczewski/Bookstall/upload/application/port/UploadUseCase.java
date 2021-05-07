@@ -4,9 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import pl.warkoczewski.Bookstall.upload.domain.Upload;
 
+import java.util.Optional;
+
 public interface UploadUseCase {
 
     Upload save(SaveUploadCommand command);
+
+    Optional<Upload> getById(String id);
 
     @Value
     @AllArgsConstructor

@@ -7,6 +7,7 @@ import pl.warkoczewski.Bookstall.upload.domain.Upload;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -16,10 +17,15 @@ public class UploadService implements UploadUseCase {
 
     @Override
     public Upload save(SaveUploadCommand command) {
-        String newId = RandomStringUtils.random(8);
+        String newId = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
         Upload upload = new Upload(newId, command.getFile(), command.getContentType(),  command.getFilename(), LocalDateTime.now());
         storage.put(upload.getId(), upload);
         System.out.println("Upload saved: " + upload.getFilename() + " with newId " + newId);
         return upload;
+    }
+
+    @Override
+    public Optional<Upload> getById(String id) {
+        return Optional.of(storage.get(id));
     }
 }
