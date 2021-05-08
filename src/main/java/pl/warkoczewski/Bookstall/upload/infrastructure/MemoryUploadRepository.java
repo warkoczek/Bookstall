@@ -1,12 +1,13 @@
 package pl.warkoczewski.Bookstall.upload.infrastructure;
 
+import org.springframework.stereotype.Repository;
 import pl.warkoczewski.Bookstall.upload.domain.Upload;
 import pl.warkoczewski.Bookstall.upload.domain.UploadRepository;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-
+@Repository
 public class MemoryUploadRepository implements UploadRepository {
 
     private Map<String, Upload> storage = new ConcurrentHashMap<>();
