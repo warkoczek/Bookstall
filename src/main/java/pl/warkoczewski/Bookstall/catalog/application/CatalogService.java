@@ -120,4 +120,17 @@ class CatalogService implements CatalogUseCase {
                 .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void removeBookCover(Long id) {
+         catalogRepository.findById(id)
+                 .ifPresent(book -> {
+                     if(book.getCoverId() != null) {
+                         upload.removeById(book.getCoverId());
+                         book.setCoverId(null);
+                         catalogRepository.save(book);
+                     }
+                 });
+
+    }
 }
