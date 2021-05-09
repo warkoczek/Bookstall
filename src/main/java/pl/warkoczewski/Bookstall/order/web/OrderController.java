@@ -2,14 +2,11 @@ package pl.warkoczewski.Bookstall.order.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.warkoczewski.Bookstall.order.application.port.QueryOrderUseCase;
-import pl.warkoczewski.Bookstall.order.domain.Order;
-import pl.warkoczewski.Bookstall.order.domain.OrderRepository;
+import pl.warkoczewski.Bookstall.order.domain.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -30,13 +27,25 @@ public class OrderController {
         return ResponseEntity.ok(message);
     }
     //get orders/id
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<Order> getOrder(@PathVariable Long id){
         return queryOrderService.findById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
     }
     //post orders
+    @PostMapping
+    public ResponseEntity<Order> addOrder(@RequestBody CreateOrderCommand command){
+
+        return null;
+    }
     //put orders id status
     //delete orders id
+
+     static class CreateOrderCommand{
+        private OrderItem item;
+        private Recipient recipient;
+        private OrderStatus status;
+        private LocalDateTime createAt;
+    }
 }

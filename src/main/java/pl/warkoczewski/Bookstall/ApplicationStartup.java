@@ -44,7 +44,7 @@ public class ApplicationStartup implements CommandLineRunner {
     public void run(String... args) {
         dataInit();
         searchCatalog();
-        //placeOrder();
+        placeOrder();
     }
 
     private void placeOrder() {
