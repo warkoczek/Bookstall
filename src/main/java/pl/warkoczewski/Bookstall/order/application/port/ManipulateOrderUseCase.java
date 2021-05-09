@@ -1,5 +1,6 @@
 package pl.warkoczewski.Bookstall.order.application.port;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
@@ -11,12 +12,13 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-public interface PlaceOrderUseCase {
+public interface ManipulateOrderUseCase {
 
     PlaceOrderResponse placeOrder(PlaceOrderCommand command);
 
     @Builder
     @Value
+    @AllArgsConstructor
     class PlaceOrderCommand{
         @Singular
         List<OrderItem> items;
