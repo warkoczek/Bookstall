@@ -18,7 +18,7 @@ import pl.warkoczewski.Bookstall.upload.application.port.UploadUseCase;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/upload")
+@RequestMapping("/uploads")
 @RequiredArgsConstructor
 public class UploadController {
 
