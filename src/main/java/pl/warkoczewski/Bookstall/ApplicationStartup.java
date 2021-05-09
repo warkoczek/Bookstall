@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.UpdateBookResponse;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
-import pl.warkoczewski.Bookstall.order.application.port.ManipulateOrderUseCase;
+import pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase;
 import pl.warkoczewski.Bookstall.order.application.port.QueryOrderUseCase;
 import pl.warkoczewski.Bookstall.order.domain.OrderItem;
 import pl.warkoczewski.Bookstall.order.domain.Recipient;
@@ -14,19 +14,19 @@ import pl.warkoczewski.Bookstall.order.domain.Recipient;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static pl.warkoczewski.Bookstall.order.application.port.ManipulateOrderUseCase.*;
+import static pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase.*;
 
 @Component
 public class ApplicationStartup implements CommandLineRunner {
 
     private final CatalogUseCase catalog;
     private final QueryOrderUseCase queryOrder;
-    private final ManipulateOrderUseCase placeOrder;
+    private final PlaceOrderUseCase placeOrder;
     private final String title;
     private final Long limit;
     private final String author;
 
-    public ApplicationStartup(CatalogUseCase catalog, QueryOrderUseCase queryOrder, ManipulateOrderUseCase placeOrder
+    public ApplicationStartup(CatalogUseCase catalog, QueryOrderUseCase queryOrder, PlaceOrderUseCase placeOrder
             , @Value("${bookstall.catalog.book.title}") String title
     , @Value("${bookstall.catalog.book.limit}") Long limit
     , @Value("${bookstall.catalog.book.author}") String author) {

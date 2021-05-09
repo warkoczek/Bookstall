@@ -4,12 +4,15 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
-import pl.warkoczewski.Bookstall.order.application.port.ManipulateOrderUseCase;
-import pl.warkoczewski.Bookstall.order.application.port.ManipulateOrderUseCase.PlaceOrderCommand;
+import pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase;
+import pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase.PlaceOrderCommand;
+import pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase.PlaceOrderResponse;
 import pl.warkoczewski.Bookstall.order.application.port.QueryOrderUseCase;
 import pl.warkoczewski.Bookstall.order.domain.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +22,7 @@ import java.util.stream.Collectors;
 public class OrderController {
 
     private final QueryOrderUseCase queryOrderService;
-    private final ManipulateOrderUseCase placeOrderService;
+    private final PlaceOrderUseCase placeOrderService;
     private static final String message = "List is empty";
 
     //get orders
@@ -40,20 +43,24 @@ public class OrderController {
     }
     //post orders
     @PostMapping
-    public ResponseEntity<Order> addOrder(@RequestBody CreateOrderCommand command){
-        PlaceOrderCommand placeOrderCommand = command.toPlaceOrderCommand();
-        ManipulateOrderUseCase.PlaceOrderResponse placeOrderResponse = placeOrderService.placeOrder(placeOrderCommand);
-        return null;
+    public ResponseEntity<Object> addOrder(@RequestBody CreateOrderCommand command){
+        PlaceOrderResponse response = placeOrderService.placeOrder(command.toPlaceOrderCommand());
+        return ResponseEntity.created(orderUri(response.getOrderId())).build();
     }
+
+    private URI orderUri(Long orderId) {
+        return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + orderId.toString()).build().toUri();
+    }
+
     //put orders id status
     //delete orders id
     @Data
      static class CreateOrderCommand{
-        List<OrderItemCommand> itemsCommand;
+        List<OrderItemCommand> orderItemCommandList;
         RecipientCommand recipientCommand;
 
         PlaceOrderCommand toPlaceOrderCommand(){
-            List<OrderItem> orderItems = itemsCommand.stream()
+            List<OrderItem> orderItems = orderItemCommandList.stream()
                     .map(orderItemCommand ->
                         new OrderItem(orderItemCommand.getBook(), orderItemCommand.getQuantity())
                     )

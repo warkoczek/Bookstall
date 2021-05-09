@@ -12,7 +12,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-public interface ManipulateOrderUseCase {
+public interface PlaceOrderUseCase {
 
     PlaceOrderResponse placeOrder(PlaceOrderCommand command);
 
@@ -26,17 +26,18 @@ public interface ManipulateOrderUseCase {
     }
 
     @Value
-    class PlaceOrderResponse{
+    class PlaceOrderResponse  {
         boolean success;
         Long orderId;
         List<String> errors;
 
-        public static PlaceOrderResponse success(Long orderId){
+        public static PlaceOrderResponse success(Long orderId) {
             return new PlaceOrderResponse(true, orderId, emptyList());
         }
 
-        public static PlaceOrderResponse failure(String... errors){
-            return new PlaceOrderResponse(false, null, Arrays.asList(errors));
+        public static PlaceOrderResponse failure(String...errors) {
+            return new PlaceOrderResponse(false, null, Arrays.asList(errors) );
         }
+
     }
 }

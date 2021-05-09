@@ -2,13 +2,13 @@ package pl.warkoczewski.Bookstall.order.application;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.warkoczewski.Bookstall.order.application.port.ManipulateOrderUseCase;
+import pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase;
 import pl.warkoczewski.Bookstall.order.domain.Order;
 import pl.warkoczewski.Bookstall.order.domain.OrderRepository;
 
 @Service
 @RequiredArgsConstructor
-public class ManipulateOrderService implements ManipulateOrderUseCase {
+public class PlaceOrderService implements PlaceOrderUseCase {
 
     private final OrderRepository repository;
 
