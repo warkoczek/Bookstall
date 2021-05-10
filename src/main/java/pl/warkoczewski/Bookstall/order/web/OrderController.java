@@ -2,8 +2,10 @@ package pl.warkoczewski.Bookstall.order.web;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 import pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase;
@@ -12,7 +14,6 @@ import pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase.PlaceO
 import pl.warkoczewski.Bookstall.order.application.port.QueryOrderUseCase;
 import pl.warkoczewski.Bookstall.order.domain.*;
 
-import javax.validation.constraints.NotEmpty;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,21 +52,18 @@ public class OrderController {
     }
     //put orders id status
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateOrder(@PathVariable Long id, @RequestBody UpdateOrderCommand command){
-        return queryOrderService.findById(id)
-                .map(order -> {
-                    order.setStatus(command.getStatus());
-                    orderRepository.save(order);
-                    return ResponseEntity.ok().build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateOrder(@PathVariable Long id, @RequestBody RestUpdateOrderCommand command){
+        OrderStatus status = OrderStatus
+                .parseString(command.status)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such status" + command.getStatus()));
+        placeOrderService.updateOrder(id, status);
     }
     //delete orders id
 
     private URI orderUri(Long orderId) {
         return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + orderId.toString()).build().toUri();
     }
-
 
     @Data
      private static class CreateOrderCommand{
@@ -100,7 +98,7 @@ public class OrderController {
         }
     }
     @Data
-    static class UpdateOrderCommand{
-         OrderStatus status;
+    static class RestUpdateOrderCommand {
+         String status;
     }
 }
