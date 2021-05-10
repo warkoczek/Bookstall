@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 import pl.warkoczewski.Bookstall.catalog.domain.CatalogRepository;
+import pl.warkoczewski.Bookstall.upload.application.UploadService;
+import pl.warkoczewski.Bookstall.upload.application.port.UploadUseCase;
+import pl.warkoczewski.Bookstall.upload.application.port.UploadUseCase.SaveUploadCommand;
+import pl.warkoczewski.Bookstall.upload.domain.Upload;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,9 +21,11 @@ import java.util.stream.Collectors;
 class CatalogService implements CatalogUseCase {
 
     private final CatalogRepository catalogRepository;
+    private final UploadUseCase upload;
 
-    public CatalogService(@Qualifier("memoryCatalogRepository") CatalogRepository catalogRepository) {
+    public CatalogService(@Qualifier("memoryCatalogRepository") CatalogRepository catalogRepository, UploadUseCase upload) {
         this.catalogRepository = catalogRepository;
+        this.upload = upload;
     }
 
     @Override
@@ -71,6 +77,21 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
+    public void updateBookCover(UpdateBookCoverCommand command){
+        int bytes = command.getFile().length;
+        System.out.println("Pan Tadeusz " + command.getFilename() + " has bytes: " + bytes);
+        catalogRepository.findById(command.getId()).ifPresent(
+                book -> {
+                    SaveUploadCommand saveUploadCommand = new SaveUploadCommand(command.getFilename()
+                            , command.getFile(), command.getContentType());
+                    Upload savedUpload = upload.save(saveUploadCommand);
+                    book.setCoverId(savedUpload.getId());
+                    catalogRepository.save(book);
+                }
+        );
+    }
+
+    @Override
     public List<Book> findAll() {
         return catalogRepository.findAll();
     }
@@ -98,5 +119,18 @@ class CatalogService implements CatalogUseCase {
                 .stream()
                 .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void removeBookCover(Long id) {
+         catalogRepository.findById(id)
+                 .ifPresent(book -> {
+                     if(book.getCoverId() != null) {
+                         upload.removeById(book.getCoverId());
+                         book.setCoverId(null);
+                         catalogRepository.save(book);
+                     }
+                 });
+
     }
 }

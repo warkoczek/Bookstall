@@ -7,6 +7,8 @@ import pl.warkoczewski.Bookstall.order.domain.Order;
 import pl.warkoczewski.Bookstall.order.domain.OrderRepository;
 
 import java.util.List;
+import java.util.Optional;
+
 @AllArgsConstructor
 @Service
 public class QueryOrderService implements QueryOrderUseCase {
@@ -16,5 +18,10 @@ public class QueryOrderService implements QueryOrderUseCase {
     @Override
     public List<Order> findAll() {
         return orderRepository.findAll();
+    }
+
+    @Override
+    public Optional<Order> findById(Long id) {
+        return orderRepository.findById(id);
     }
 }

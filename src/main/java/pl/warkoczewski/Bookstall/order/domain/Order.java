@@ -29,6 +29,11 @@ public class Order {
           this.createdAt = createdAt;
      }
 
+     public Order(List<OrderItem> items, Recipient recipient) {
+          this.items = items;
+          this.recipient = recipient;
+     }
+
      public BigDecimal totalPrice(){
          return items.stream().map(orderItem -> orderItem.getBook().getPrice().multiply(new BigDecimal(orderItem.getQuantity())))
                  .reduce(BigDecimal.ZERO, BigDecimal::add);
