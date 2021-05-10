@@ -14,10 +14,11 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-public interface PlaceOrderUseCase {
+public interface ManageOrderUseCase {
 
     PlaceOrderResponse placeOrder(PlaceOrderCommand command);
     void updateOrder(Long id, OrderStatus status);
+    void deleteOrderById(Long id);
 
     @Builder
     @Value

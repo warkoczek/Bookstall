@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
-import pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase;
-import pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase.PlaceOrderCommand;
-import pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase.PlaceOrderResponse;
+import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase;
+import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase.PlaceOrderCommand;
+import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase.PlaceOrderResponse;
 import pl.warkoczewski.Bookstall.order.application.port.QueryOrderUseCase;
 import pl.warkoczewski.Bookstall.order.domain.*;
 
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class OrderController {
 
     private final QueryOrderUseCase queryOrderService;
-    private final PlaceOrderUseCase placeOrderService;
+    private final ManageOrderUseCase manageOrderService;
     private final OrderRepository orderRepository;
     private static final String message = "List is empty";
 
@@ -47,8 +47,11 @@ public class OrderController {
     //post orders
     @PostMapping
     public ResponseEntity<Object> addOrder(@RequestBody CreateOrderCommand command){
-        PlaceOrderResponse response = placeOrderService.placeOrder(command.toPlaceOrderCommand());
+        PlaceOrderResponse response = manageOrderService.placeOrder(command.toPlaceOrderCommand());
         return ResponseEntity.created(orderUri(response.getOrderId())).build();
+    }
+    private URI orderUri(Long orderId) {
+        return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + orderId.toString()).build().toUri();
     }
     //put orders id status
     @PutMapping("/{id}")
@@ -57,12 +60,13 @@ public class OrderController {
         OrderStatus status = OrderStatus
                 .parseString(command.status)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such status" + command.getStatus()));
-        placeOrderService.updateOrder(id, status);
+        manageOrderService.updateOrder(id, status);
     }
     //delete orders id
-
-    private URI orderUri(Long orderId) {
-        return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + orderId.toString()).build().toUri();
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOrderById(@PathVariable Long id){
+        manageOrderService.deleteOrderById(id);
     }
 
     @Data

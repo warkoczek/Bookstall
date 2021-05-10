@@ -43,4 +43,9 @@ public class MemoryOrderRepository implements OrderRepository {
     public Optional<Order> findById(Long id) {
         return Optional.ofNullable(storage.get(id));
     }
+
+    @Override
+    public void deleteById(Long id) {
+        storage.remove(id);
+    }
 }
