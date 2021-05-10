@@ -12,6 +12,7 @@ import pl.warkoczewski.Bookstall.order.application.port.PlaceOrderUseCase.PlaceO
 import pl.warkoczewski.Bookstall.order.application.port.QueryOrderUseCase;
 import pl.warkoczewski.Bookstall.order.domain.*;
 
+import javax.validation.constraints.NotEmpty;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ public class OrderController {
 
     private final QueryOrderUseCase queryOrderService;
     private final PlaceOrderUseCase placeOrderService;
+    private final OrderRepository orderRepository;
     private static final String message = "List is empty";
 
     //get orders
@@ -47,15 +49,26 @@ public class OrderController {
         PlaceOrderResponse response = placeOrderService.placeOrder(command.toPlaceOrderCommand());
         return ResponseEntity.created(orderUri(response.getOrderId())).build();
     }
+    //put orders id status
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateOrder(@PathVariable Long id, @RequestBody UpdateOrderCommand command){
+        return queryOrderService.findById(id)
+                .map(order -> {
+                    order.setStatus(command.getStatus());
+                    orderRepository.save(order);
+                    return ResponseEntity.ok().build();
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+    //delete orders id
 
     private URI orderUri(Long orderId) {
         return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + orderId.toString()).build().toUri();
     }
 
-    //put orders id status
-    //delete orders id
+
     @Data
-     static class CreateOrderCommand{
+     private static class CreateOrderCommand{
         List<OrderItemCommand> orderItemCommandList;
         RecipientCommand recipientCommand;
 
@@ -85,5 +98,9 @@ public class OrderController {
         Recipient toRecipient(){
             return new Recipient(name, phone, street, city, zipCode, email);
         }
+    }
+    @Data
+    static class UpdateOrderCommand{
+         OrderStatus status;
     }
 }
