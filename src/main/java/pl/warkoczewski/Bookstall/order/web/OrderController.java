@@ -77,7 +77,7 @@ public class OrderController {
         PlaceOrderCommand toPlaceOrderCommand(){
             List<OrderItem> orderItems = orderItemCommandList.stream()
                     .map(orderItemCommand ->
-                        new OrderItem(orderItemCommand.getBook(), orderItemCommand.getQuantity())
+                        new OrderItem(orderItemCommand.getBook().getId(), orderItemCommand.getQuantity())
                     )
                     .collect(Collectors.toList());
             return new PlaceOrderCommand(orderItems, recipientCommand.toRecipient());

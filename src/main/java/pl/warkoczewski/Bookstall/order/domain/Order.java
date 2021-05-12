@@ -1,23 +1,26 @@
 package pl.warkoczewski.Bookstall.order.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "orders")
 public class Order {
-
+     @Id
+     @GeneratedValue(strategy = GenerationType.AUTO)
      private Long id;
+     @OneToMany
      private List<OrderItem> items;
-     private Recipient recipient;
+     private transient Recipient recipient;
      @Builder.Default
      private OrderStatus status = OrderStatus.NEW;
      private LocalDateTime createdAt;
@@ -33,11 +36,13 @@ public class Order {
           this.items = items;
           this.recipient = recipient;
      }
+     /*
+     public BigDecimal totalPrice() {
+          return items.stream().map(orderItem ->
+                  orderItem.getBookId().getPrice().multiply(new BigDecimal(orderItem.getQuantity())))
 
-     public BigDecimal totalPrice(){
-         return items.stream().map(orderItem -> orderItem.getBook().getPrice().multiply(new BigDecimal(orderItem.getQuantity())))
                  .reduce(BigDecimal.ZERO, BigDecimal::add);
-     }
+     }*/
 
 
 
