@@ -12,6 +12,7 @@ import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase;
 import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase.PlaceOrderCommand;
 import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase.PlaceOrderResponse;
 import pl.warkoczewski.Bookstall.order.application.port.QueryOrderUseCase;
+import pl.warkoczewski.Bookstall.order.db.OrderJpaRepository;
 import pl.warkoczewski.Bookstall.order.domain.*;
 
 import java.net.URI;
@@ -25,7 +26,6 @@ public class OrderController {
 
     private final QueryOrderUseCase queryOrderService;
     private final ManageOrderUseCase manageOrderService;
-    private final OrderRepository orderRepository;
     private static final String message = "List is empty";
 
     //get orders

@@ -18,7 +18,8 @@ public class Order {
      @Id
      @GeneratedValue(strategy = GenerationType.AUTO)
      private Long id;
-     @OneToMany
+     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+     @JoinColumn(name = "order_id")
      private List<OrderItem> items;
      private transient Recipient recipient;
      @Builder.Default

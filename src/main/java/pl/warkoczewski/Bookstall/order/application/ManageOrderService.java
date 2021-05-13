@@ -3,8 +3,8 @@ package pl.warkoczewski.Bookstall.order.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase;
+import pl.warkoczewski.Bookstall.order.db.OrderJpaRepository;
 import pl.warkoczewski.Bookstall.order.domain.Order;
-import pl.warkoczewski.Bookstall.order.domain.OrderRepository;
 import pl.warkoczewski.Bookstall.order.domain.OrderStatus;
 
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class ManageOrderService implements ManageOrderUseCase {
 
-    private final OrderRepository repository;
+    private final OrderJpaRepository repository;
 
     @Override
     public PlaceOrderResponse placeOrder(PlaceOrderCommand command) {
