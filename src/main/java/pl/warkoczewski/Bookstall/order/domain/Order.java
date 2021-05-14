@@ -2,6 +2,9 @@ package pl.warkoczewski.Bookstall.order.domain;
 
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 import javax.persistence.*;
@@ -14,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
      @Id
      @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,8 +27,13 @@ public class Order {
      private List<OrderItem> items;
      private transient Recipient recipient;
      @Builder.Default
+     @Enumerated(EnumType.STRING)
      private OrderStatus status = OrderStatus.NEW;
+     @CreatedDate
      private LocalDateTime createdAt;
+
+     @LastModifiedDate
+     private LocalDateTime updatedAt;
 
      public Order(List<OrderItem> items, Recipient recipient, OrderStatus status, LocalDateTime createdAt) {
           this.items = items;

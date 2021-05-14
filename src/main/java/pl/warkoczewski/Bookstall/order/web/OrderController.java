@@ -12,6 +12,7 @@ import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase;
 import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase.PlaceOrderCommand;
 import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase.PlaceOrderResponse;
 import pl.warkoczewski.Bookstall.order.application.port.QueryOrderUseCase;
+import pl.warkoczewski.Bookstall.order.application.port.QueryOrderUseCase.RichOrder;
 import pl.warkoczewski.Bookstall.order.db.OrderJpaRepository;
 import pl.warkoczewski.Bookstall.order.domain.*;
 
@@ -31,7 +32,7 @@ public class OrderController {
     //get orders
     @GetMapping
     public ResponseEntity<Object> getOrders(){
-        List<Order> orders = queryOrderService.findAll();
+        List<RichOrder> orders = queryOrderService.findAll();
         if(!orders.isEmpty()){
             return ResponseEntity.ok(orders);
         }
@@ -39,7 +40,7 @@ public class OrderController {
     }
     //get orders/id
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrder(@PathVariable Long id){
+    public ResponseEntity<RichOrder> getOrder(@PathVariable Long id){
         return queryOrderService.findById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());

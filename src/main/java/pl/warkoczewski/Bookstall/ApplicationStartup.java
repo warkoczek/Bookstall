@@ -64,10 +64,8 @@ public class ApplicationStartup implements CommandLineRunner {
                 .build();
         PlaceOrderResponse response = placeOrder.placeOrder(command);
         System.out.println("Created order with id: " + response.getOrderId());
-        /*
-        queryOrder.findAll().forEach(order -> {
-            System.out.println("GOT ORDER WITH TOTAL PRICE: " + order.totalPrice() + " DETAILS: " + order);
-        });*/
+
+        queryOrder.findAll().forEach(order -> System.out.println("GOT ORDER WITH TOTAL PRICE: " + order.getTotalPrice() + " DETAILS: " + order));
 
     }
 
