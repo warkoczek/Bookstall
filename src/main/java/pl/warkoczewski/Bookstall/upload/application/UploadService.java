@@ -1,14 +1,11 @@
 package pl.warkoczewski.Bookstall.upload.application;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import pl.warkoczewski.Bookstall.upload.application.port.UploadUseCase;
 import pl.warkoczewski.Bookstall.upload.db.UploadJpaRepository;
 import pl.warkoczewski.Bookstall.upload.domain.Upload;
-import pl.warkoczewski.Bookstall.upload.domain.UploadRepository;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -24,10 +21,9 @@ public class UploadService implements UploadUseCase {
 
     @Override
     public Upload save(SaveUploadCommand command) {
-        String newId = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
         Upload upload = new Upload(command.getFilename(), command.getContentType(), command.getFile());
         uploadRepository.save(upload);
-        System.out.println("Upload saved: " + upload.getFilename() + " with newId " + newId);
+        System.out.println("Upload saved: " + upload.getFilename() + " with newId " + upload.getId());
         return upload;
     }
 
