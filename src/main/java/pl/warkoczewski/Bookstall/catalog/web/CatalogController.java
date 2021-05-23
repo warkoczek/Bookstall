@@ -14,6 +14,7 @@ import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.CreateB
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.UpdateBookCommand;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.UpdateBookCoverCommand;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.UpdateBookResponse;
+import pl.warkoczewski.Bookstall.catalog.domain.Author;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 
 import javax.validation.Valid;
@@ -97,8 +98,9 @@ public class CatalogController {
     private static class RestBookCommand {
         @NotBlank
         private String title;
-        @NotBlank
-        private String author;
+       /* @NotBlank
+        private String author;*/
+       private Set<Author> authors;
         @NotNull
         private Integer year;
         @NotNull
@@ -106,11 +108,11 @@ public class CatalogController {
         private BigDecimal price;
 
         CreateBookCommand toCreateCommand(){
-            return new CreateBookCommand(title, author, year, price);
+            return new CreateBookCommand(title, Set.of(), year, price);
         }
 
         UpdateBookCommand toUpdateCommand(Long id){
-            return new UpdateBookCommand(id, title, author, year, price);
+            return new UpdateBookCommand(id, title, Set.of(), year, price);
         }
     }
 }

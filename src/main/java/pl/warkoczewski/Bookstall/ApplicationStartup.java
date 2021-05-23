@@ -1,10 +1,15 @@
 package pl.warkoczewski.Bookstall;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase;
+import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.CreateBookCommand;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.UpdateBookResponse;
+import pl.warkoczewski.Bookstall.catalog.db.AuthorJpaRepository;
+import pl.warkoczewski.Bookstall.catalog.domain.Author;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase;
 import pl.warkoczewski.Bookstall.order.application.port.QueryOrderUseCase;
@@ -12,42 +17,28 @@ import pl.warkoczewski.Bookstall.order.domain.OrderItem;
 import pl.warkoczewski.Bookstall.order.domain.Recipient;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
 import static pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase.*;
 
 @Component
+@RequiredArgsConstructor
 public class ApplicationStartup implements CommandLineRunner {
 
     private final CatalogUseCase catalog;
     private final QueryOrderUseCase queryOrder;
     private final ManageOrderUseCase placeOrder;
-    private final String title;
-    private final Long limit;
-    private final String author;
-
-    public ApplicationStartup(CatalogUseCase catalog, QueryOrderUseCase queryOrder, ManageOrderUseCase placeOrder
-            , @Value("${bookstall.catalog.book.title}") String title
-    , @Value("${bookstall.catalog.book.limit}") Long limit
-    , @Value("${bookstall.catalog.book.author}") String author) {
-        this.catalog = catalog;
-        this.queryOrder = queryOrder;
-        this.placeOrder = placeOrder;
-        this.title = title;
-        this.limit = limit;
-        this.author = author;
-    }
+    private final AuthorJpaRepository authorRepository;
 
     @Override
     public void run(String... args) {
         dataInit();
-        searchCatalog();
         placeOrder();
     }
 
     private void placeOrder() {
-        Book pan_tadeusz = catalog.findOneByTitle("Pan Tadeusz").orElseThrow(() -> new IllegalStateException("Can not find book with such title"));
-        Book chlopi = catalog.findOneByTitle("Chłopi").orElseThrow(() -> new IllegalStateException("Can not find book with such title"));
+        Book effectiveJava = catalog.findOneByTitle("Effective Java").orElseThrow(() -> new IllegalStateException("Can not find book with such title"));
+        Book javaPuzzlers = catalog.findOneByTitle("Java Puzzlers").orElseThrow(() -> new IllegalStateException("Can not find book with such title"));
         Recipient recipient = Recipient.builder()
                 .name("Adam")
                 .phone("1111")
@@ -58,8 +49,8 @@ public class ApplicationStartup implements CommandLineRunner {
                 .build();
         PlaceOrderCommand  command = PlaceOrderCommand
                 .builder()
-                .item(new OrderItem(pan_tadeusz.getId(), 16))
-                .item(new OrderItem(chlopi.getId(), 7))
+                .item(new OrderItem(effectiveJava.getId(), 16))
+                .item(new OrderItem(javaPuzzlers.getId(), 7))
                 .recipient(recipient)
                 .build();
         PlaceOrderResponse response = placeOrder.placeOrder(command);
@@ -69,34 +60,15 @@ public class ApplicationStartup implements CommandLineRunner {
 
     }
 
-    private void searchCatalog() {
-        findByTitle();
-        findAndUpdate();
-        findByTitle();
-    }
-
     private void dataInit() {
-
-        catalog.addBook( new CatalogUseCase.CreateBookCommand( "Pan Tadeusz", "Adam Mickiewicz", 1834, new BigDecimal(2)));
-        catalog.addBook( new CatalogUseCase.CreateBookCommand( "Ogniem i mieczem", "Henryk Sienkiewicz", 1884, new BigDecimal(23)));
-        catalog.addBook( new CatalogUseCase.CreateBookCommand( "Chłopi", "Władysław Reymont", 1904, new BigDecimal(45)));
-        catalog.addBook( new CatalogUseCase.CreateBookCommand( "Pan Wołodyjowski", "Henryk Sienkiewicz", 1899, new BigDecimal(55)));
+        Author joshua = new Author("Joshua", "Bloch");
+        Author neal = new Author("Neal", "Gafter");
+        authorRepository.save(joshua);
+        authorRepository.save(neal);
+        CreateBookCommand effectiveJava = new CreateBookCommand("Effective Java", Set.of(joshua.getId()), 2005, new BigDecimal(40));
+        CreateBookCommand javaPuzzlers = new CreateBookCommand("Java Puzzlers", Set.of(joshua.getId(), neal.getId()), 2011, new BigDecimal(90));
+        catalog.addBook(effectiveJava);
+        catalog.addBook(javaPuzzlers);
     }
 
-    private void findByTitle() {
-        List<Book> byTitle = catalog.findByTitle(title);
-        byTitle.forEach(System.out::println);
-    }
-
-    private void findAndUpdate() {
-        catalog.findOneByTitleAndAuthor("Pan Tadeusz", "Adam Mickiewicz")
-                .ifPresent(book -> {
-                    CatalogUseCase.UpdateBookCommand command = CatalogUseCase.UpdateBookCommand.builder()
-                            .id(book.getId())
-                            .title("Pan Tadeusz, czyli ostatni zajazd na Litwie")
-                            .build();
-                    UpdateBookResponse updateBookResponse = catalog.updateBook(command);
-                    System.out.println("Updating book result: " + updateBookResponse.isSuccess());
-                });
-    }
 }

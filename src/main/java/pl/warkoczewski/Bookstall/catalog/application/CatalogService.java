@@ -1,8 +1,11 @@
 package pl.warkoczewski.Bookstall.catalog.application;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase;
+import pl.warkoczewski.Bookstall.catalog.db.AuthorJpaRepository;
 import pl.warkoczewski.Bookstall.catalog.db.BookJpaRepository;
+import pl.warkoczewski.Bookstall.catalog.domain.Author;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 import pl.warkoczewski.Bookstall.upload.application.port.UploadUseCase;
 import pl.warkoczewski.Bookstall.upload.application.port.UploadUseCase.SaveUploadCommand;
@@ -11,18 +14,16 @@ import pl.warkoczewski.Bookstall.upload.domain.Upload;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 class CatalogService implements CatalogUseCase {
 
     private final BookJpaRepository repository;
+    private final AuthorJpaRepository authorRepository;
     private final UploadUseCase upload;
-
-    public CatalogService(BookJpaRepository repository, UploadUseCase upload) {
-        this.repository = repository;
-        this.upload = upload;
-    }
 
     @Override
     public Optional<Book> findById(Long id){
@@ -52,8 +53,20 @@ class CatalogService implements CatalogUseCase {
 
     @Override
     public Book addBook(CreateBookCommand command) {
-        Book book = command.toBook();
+        Book book = toBook(command);
         return repository.save(book);
+    }
+
+    private Book toBook(CreateBookCommand command){
+        Book book = new Book(command.getTitle(), command.getYear(), command.getPrice());
+        Set<Author> authors = command.getAuthors().stream()
+                .map(authorId ->
+                    authorRepository
+                            .findById(authorId)
+                            .orElseThrow(() -> new IllegalArgumentException("No author with given id " + authorId)))
+                .collect(Collectors.toSet());
+        book.setAuthors(authors);
+        return book;
     }
 
     @Override
