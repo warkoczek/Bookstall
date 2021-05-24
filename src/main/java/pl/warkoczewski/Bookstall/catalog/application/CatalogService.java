@@ -3,7 +3,7 @@ package pl.warkoczewski.Bookstall.catalog.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase;
-import pl.warkoczewski.Bookstall.catalog.db.AuthorJpaRepository;
+import pl.warkoczewski.Bookstall.catalog.db.AuthorsJpaRepository;
 import pl.warkoczewski.Bookstall.catalog.db.BookJpaRepository;
 import pl.warkoczewski.Bookstall.catalog.domain.Author;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 class CatalogService implements CatalogUseCase {
 
     private final BookJpaRepository repository;
-    private final AuthorJpaRepository authorRepository;
+    private final AuthorsJpaRepository authorRepository;
     private final UploadUseCase upload;
 
     @Override
@@ -110,7 +110,7 @@ class CatalogService implements CatalogUseCase {
         return repository.findAll()
                 .stream()
                 .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
+                //.filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
                 .findFirst();
     }
 
@@ -118,16 +118,13 @@ class CatalogService implements CatalogUseCase {
     public List<Book> findByTitleAndAuthor(String title, String author) {
         return repository.findAll().stream()
                 .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
+                //.filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Book> findByAuthor(String author){
-        return repository.findAll()
-                .stream()
-                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
-                .collect(Collectors.toList());
+        return repository.findByAuthors(author);
     }
 
     @Override

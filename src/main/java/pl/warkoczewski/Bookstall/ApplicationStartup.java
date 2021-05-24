@@ -1,14 +1,11 @@
 package pl.warkoczewski.Bookstall;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.CreateBookCommand;
-import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.UpdateBookResponse;
-import pl.warkoczewski.Bookstall.catalog.db.AuthorJpaRepository;
+import pl.warkoczewski.Bookstall.catalog.db.AuthorsJpaRepository;
 import pl.warkoczewski.Bookstall.catalog.domain.Author;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 import pl.warkoczewski.Bookstall.order.application.port.ManageOrderUseCase;
@@ -28,7 +25,7 @@ public class ApplicationStartup implements CommandLineRunner {
     private final CatalogUseCase catalog;
     private final QueryOrderUseCase queryOrder;
     private final ManageOrderUseCase placeOrder;
-    private final AuthorJpaRepository authorRepository;
+    private final AuthorsJpaRepository authorRepository;
 
     @Override
     public void run(String... args) {

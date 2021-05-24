@@ -1,5 +1,6 @@
 package pl.warkoczewski.Bookstall.catalog.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -22,12 +23,12 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
-    private String author;
     private Integer year;
     private BigDecimal price;
     private Long coverId;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable
+    @JsonIgnoreProperties("books")
     private Set<Author> authors;
     @CreatedDate
     private LocalDateTime createdAt;
