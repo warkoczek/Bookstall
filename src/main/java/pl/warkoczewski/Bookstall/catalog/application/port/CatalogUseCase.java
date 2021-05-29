@@ -18,8 +18,6 @@ public interface CatalogUseCase {
 
     Optional<Book> findById(Long id);
 
-    Optional<Book> findOneByTitleAndAuthor(String title, String author);
-
     List<Book> findByTitleAndAuthor(String title, String author);
 
     List<Book> findByAuthor(String author);
@@ -66,23 +64,6 @@ public interface CatalogUseCase {
          Set<Long> authors;
          Integer year;
          BigDecimal price;
-
-        public Book updateFields(Book book) {
-            if(title != null){
-                book.setTitle(title);
-            }
-            /*
-            if(author != null){
-                book.setAuthor(author);
-            }*/
-            if((year != null)){
-                book.setYear(year);
-            }
-            if((price != null)){
-                book.setPrice(price);
-            }
-            return book;
-        }
     }
 
     @Value

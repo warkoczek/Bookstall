@@ -20,6 +20,7 @@ import pl.warkoczewski.Bookstall.catalog.domain.Book;
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -98,9 +99,8 @@ public class CatalogController {
     private static class RestBookCommand {
         @NotBlank
         private String title;
-       /* @NotBlank
-        private String author;*/
-       private Set<Author> authors;
+        @NotEmpty
+        private Set<Long> authors;
         @NotNull
         private Integer year;
         @NotNull
@@ -108,11 +108,11 @@ public class CatalogController {
         private BigDecimal price;
 
         CreateBookCommand toCreateCommand(){
-            return new CreateBookCommand(title, Set.of(), year, price);
+            return new CreateBookCommand(title, authors, year, price);
         }
 
         UpdateBookCommand toUpdateCommand(Long id){
-            return new UpdateBookCommand(id, title, Set.of(), year, price);
+            return new UpdateBookCommand(id, title, authors, year, price);
         }
     }
 }
