@@ -14,7 +14,6 @@ import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.CreateB
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.UpdateBookCommand;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.UpdateBookCoverCommand;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase.UpdateBookResponse;
-import pl.warkoczewski.Bookstall.catalog.domain.Author;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
 
 import javax.validation.Valid;
@@ -35,17 +34,7 @@ public class CatalogController {
     private final CatalogUseCase catalog;
 
     @GetMapping
-    public List<Book> getAll(
-            @RequestParam Optional<String> title
-            , @RequestParam Optional<String> author
-    ){
-        if(title.isPresent() && author.isPresent()){
-            return catalog.findByTitleAndAuthor(title.get(), author.get());
-        } else if(title.isPresent()){
-            return catalog.findByTitle(title.get());
-        } else if(author.isPresent()){
-            return catalog.findByAuthor(author.get());
-        }
+    public List<Book> getAll(){
         return catalog.findAll();
     }
 
@@ -55,6 +44,7 @@ public class CatalogController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
     @PostMapping
     public ResponseEntity<?> addBook(@Valid @RequestBody RestBookCommand command){
         Book book = catalog.addBook(command.toCreateCommand());

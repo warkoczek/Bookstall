@@ -18,7 +18,7 @@ public interface CatalogUseCase {
 
     Optional<Book> findById(Long id);
 
-    List<Book> findByTitleAndAuthor(String title, String author);
+
 
     List<Book> findByAuthor(String author);
 
