@@ -1,21 +1,20 @@
 package pl.warkoczewski.Bookstall.order.domain;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import com.fasterxml.jackson.databind.ser.Serializers;
+import lombok.*;
 import pl.warkoczewski.Bookstall.catalog.domain.Book;
+import pl.warkoczewski.Bookstall.jpa.BaseEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
-public class OrderItem {
-    @Id
-    @GeneratedValue
-    Long id;
+public class OrderItem extends BaseEntity {
+
     Long bookId;
     Integer quantity;
 

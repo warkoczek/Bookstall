@@ -1,9 +1,7 @@
 package pl.warkoczewski.Bookstall.catalog.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import pl.warkoczewski.Bookstall.jpa.BaseEntity;
@@ -14,15 +12,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @ToString(exclude = "books")
 public class Author extends BaseEntity {
 
-    @Id
-    @GeneratedValue
-    private Long id;
     private String firstName;
     private String lastName;
     @CreatedDate

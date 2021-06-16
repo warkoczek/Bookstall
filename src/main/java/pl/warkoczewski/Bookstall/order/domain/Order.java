@@ -12,7 +12,8 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,9 +21,7 @@ import java.util.List;
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order extends BaseEntity {
-     @Id
-     @GeneratedValue(strategy = GenerationType.AUTO)
-     private Long id;
+
      @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
      @JoinColumn(name = "order_id")
      private List<OrderItem> items;
