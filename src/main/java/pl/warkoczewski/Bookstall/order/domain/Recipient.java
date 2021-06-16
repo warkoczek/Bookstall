@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.warkoczewski.Bookstall.jpa.BaseEntity;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
@@ -15,7 +16,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Recipient {
+public class Recipient extends BaseEntity {
 
     @Id
     @GeneratedValue

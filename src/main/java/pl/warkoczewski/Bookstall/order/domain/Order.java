@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import pl.warkoczewski.Bookstall.jpa.BaseEntity;
 
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class Order extends BaseEntity {
      @Id
      @GeneratedValue(strategy = GenerationType.AUTO)
      private Long id;

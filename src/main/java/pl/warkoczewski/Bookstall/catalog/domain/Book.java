@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import pl.warkoczewski.Bookstall.jpa.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ import java.util.Set;
 @ToString(exclude = "authors")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Book {
+public class Book extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -50,5 +51,11 @@ public class Book {
     public void removeAuthor(Author author){
         authors.remove(author);
         author.getBooks().remove(this);
+    }
+
+    public void removeAuthors(){
+        Book self = this;
+        authors.forEach(author -> author.getBooks().remove(self));
+        authors.clear();
     }
 }

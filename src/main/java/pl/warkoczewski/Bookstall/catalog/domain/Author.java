@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import pl.warkoczewski.Bookstall.jpa.BaseEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @ToString(exclude = "books")
-public class Author {
+public class Author extends BaseEntity {
 
     @Id
     @GeneratedValue
