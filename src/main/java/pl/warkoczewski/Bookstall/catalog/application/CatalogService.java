@@ -2,6 +2,7 @@ package pl.warkoczewski.Bookstall.catalog.application;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.warkoczewski.Bookstall.catalog.application.port.CatalogUseCase;
 import pl.warkoczewski.Bookstall.catalog.db.AuthorsJpaRepository;
 import pl.warkoczewski.Bookstall.catalog.db.BookJpaRepository;
@@ -24,6 +25,11 @@ class CatalogService implements CatalogUseCase {
     private final BookJpaRepository repository;
     private final AuthorsJpaRepository authorRepository;
     private final UploadUseCase upload;
+
+    @Override
+    public List<Book> findAll() {
+        return repository.findAllEager();
+    }
 
     @Override
     public Optional<Book> findById(Long id){
@@ -49,6 +55,7 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
+    @Transactional
     public Book addBook(CreateBookCommand command) {
         Book book = toBook(command);
         return repository.save(book);
@@ -81,11 +88,11 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
+    @Transactional
     public UpdateBookResponse updateBook(UpdateBookCommand bookCommand) {
         return repository.findById(bookCommand.getId())
                 .map(book -> {
-                    Book updatedBook = updateFields(bookCommand, book);
-                    repository.save(updatedBook);
+                    updateFields(bookCommand, book);
                     return UpdateBookResponse.SUCCESS;
                 })
                 .orElseGet(() -> new UpdateBookResponse(false, Collections.singletonList("Book with id: " + bookCommand.getId() + " was not found")));
@@ -121,12 +128,6 @@ class CatalogService implements CatalogUseCase {
                 }
         );
     }
-
-    @Override
-    public List<Book> findAll() {
-        return repository.findAll();
-    }
-
 
     @Override
     public List<Book> findByAuthor(String name){

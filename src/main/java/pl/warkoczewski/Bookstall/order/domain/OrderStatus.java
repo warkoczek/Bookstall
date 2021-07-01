@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum OrderStatus {
-    NEW, CONFIRMED, IN_DELIVERY, DELIVERED, CANCELED, RETURNED;
+    NEW, PAID, CANCELED, ABANDONED, SHIPPED;
 
     public static Optional<OrderStatus> parseString(String value){
         return Arrays.stream(OrderStatus.values())

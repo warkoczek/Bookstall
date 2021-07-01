@@ -24,7 +24,7 @@ public class Author extends BaseEntity {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "authors")
+    @ManyToMany(mappedBy = "authors", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnoreProperties("authors")
     private Set<Book> books = new HashSet<>();
 
