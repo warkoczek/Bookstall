@@ -13,4 +13,8 @@ public enum OrderStatus {
                 .filter(orderStatus -> StringUtils.equalsIgnoreCase(orderStatus.name(), value))
                 .findFirst();
     }
+
+    public OrderStatus updateOrderStatus(OrderStatus orderStatus){
+        throw new IllegalArgumentException("Unable to mark " + this.name() + " order as " + orderStatus.name());
+    }
 }
