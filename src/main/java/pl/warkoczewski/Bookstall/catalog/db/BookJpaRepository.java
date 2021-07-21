@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface BookJpaRepository extends JpaRepository<Book, Long> {
 
-    @Query("select b from Book b JOIN FETCH b.authors")
+    @Query("select distinct b from Book b JOIN FETCH b.authors")
     List<Book> findAllEager();
 
     //List<Book> findByAuthors(String author);

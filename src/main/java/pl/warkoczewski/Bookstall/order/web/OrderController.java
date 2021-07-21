@@ -46,7 +46,7 @@ public class OrderController {
         .orElse(ResponseEntity.notFound().build());
     }
     //post orders
-    @PostMapping
+    @PostMapping(consumes = "application/json")
     public ResponseEntity<Object> addOrder(@RequestBody CreateOrderCommand command){
         PlaceOrderResponse response = manageOrderService.placeOrder(command.toPlaceOrderCommand());
         return ResponseEntity.created(orderUri(response.getOrderId())).build();

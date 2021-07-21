@@ -9,6 +9,7 @@ import pl.warkoczewski.Bookstall.order.domain.OrderStatus;
 
 import java.util.Collections;
 
+
 @Service
 @RequiredArgsConstructor
 public class ManageOrderService implements ManageOrderUseCase {
@@ -28,7 +29,7 @@ public class ManageOrderService implements ManageOrderUseCase {
     public void updateOrder(Long id, OrderStatus status) {
          repository.findById(id)
                 .map(order -> {
-                    order.setStatus(status);
+                    order.updateStatus(status);
                     repository.save(order);
                     return UpdateOrderResponse.SUCCESS;
                 }).orElse(new UpdateOrderResponse(false

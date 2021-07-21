@@ -16,17 +16,25 @@ import java.util.stream.Collectors;
 public class CustomGlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleException(MethodArgumentNotValidException ex){
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", new Date());
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        body.put("status", status);
+    public ResponseEntity<Object> handle1(MethodArgumentNotValidException ex){
         List<String> errors = ex
                 .getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(error -> error.getField() + " - " + error.getDefaultMessage())
-                .collect(Collectors.toList());
+                .map(x -> x.getField() + " - " + x.getDefaultMessage())
+                .collect(Collectors.toList());Collectors.toList();
+        return handleException(HttpStatus.BAD_REQUEST, errors);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handle2(IllegalArgumentException ex){
+        return handleException(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
+    }
+
+    private ResponseEntity<Object> handleException(HttpStatus status, List<String> errors) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", new Date());
+        body.put("status", status);
         body.put("errors", errors);
         return new ResponseEntity<>(body, status);
     }

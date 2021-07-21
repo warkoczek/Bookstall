@@ -9,9 +9,9 @@ import pl.warkoczewski.Bookstall.jpa.BaseEntity;
 
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -36,25 +36,8 @@ public class Order extends BaseEntity {
      @LastModifiedDate
      private LocalDateTime updatedAt;
 
-     public Order(List<OrderItem> items, Recipient recipient, OrderStatus status, LocalDateTime createdAt) {
-          this.items = items;
-          this.recipient = recipient;
-          this.status = status;
-          this.createdAt = createdAt;
+     public void updateStatus(OrderStatus newStatus){
+          this.status = status.updateOrderStatus(newStatus);
      }
-
-     public Order(List<OrderItem> items, Recipient recipient) {
-          this.items = items;
-          this.recipient = recipient;
-     }
-     /*
-     public BigDecimal totalPrice() {
-          return items.stream().map(orderItem ->
-                  orderItem.getBookId().getPrice().multiply(new BigDecimal(orderItem.getQuantity())))
-
-                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-     }*/
-
-
 
 }
